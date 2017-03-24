@@ -62,7 +62,7 @@ class MainVC: UIViewController {
         imageView.frame = CGRect(x: 0, y: 0, width: dimension, height: dimension)
         
         let animation = CAKeyframeAnimation(keyPath: "position")
-        animation.path = customPath().cgPath
+        animation.path = customPathFromButton().cgPath
         animation.duration = drand48() + 0.7
         animation.fillMode = kCAFillModeForwards
         animation.isRemovedOnCompletion = false
@@ -87,10 +87,45 @@ class MainVC: UIViewController {
         let cp2 = CGPoint(x: cp2RandomX, y: cp2RandomY)
         
         path.addCurve(to: endPoint, controlPoint1: cp1, controlPoint2: cp2)
-
+        return path
+    }
+    
+    func customPathFromButton() -> UIBezierPath {
+        let path = UIBezierPath()
+        
+        let randomButtonX: CGFloat = CGFloat(drand48()) * self.buyButton.frame.size.width
+        let buttonOriginX: CGFloat = self.buyButton.frame.origin.x
+        path.move(to: CGPoint(x: buttonOriginX + randomButtonX , y: self.buyButton.frame.origin.y))
+        
+        let randomEndPointX:  CGFloat = CGFloat(drand48()) * self.view.frame.size.width
+        let endPoint = CGPoint(x: randomEndPointX, y: self.view.frame.minY - 50)
+        
+        let cp1RandomX: CGFloat = CGFloat(drand48()) * self.view.frame.width
+        let cpiRandomY: CGFloat = CGFloat(drand48()) * self.buyButton.frame.origin.y
+        let cp2RandomX: CGFloat = CGFloat(drand48()) * self.view.frame.width
+        let cp2RandomY: CGFloat = CGFloat(drand48()) * self.buyButton.frame.origin.y
+        
+        let cp1 = CGPoint(x: cp1RandomX, y: cpiRandomY)
+        let cp2 = CGPoint(x: cp2RandomX, y: cp2RandomY)
+        
+        path.addCurve(to: endPoint, controlPoint1: cp1, controlPoint2: cp2)
+        
         return path
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
