@@ -47,11 +47,15 @@ class MainVC: UIViewController {
     
     func performHandler() {
         (0...50).forEach { (_) in
-            generateAnimatedViews()
+            generateAnimatedViews({ (imageView) in
+                UIView.animate(withDuration: 1.5) {
+                    imageView.alpha = 0
+                }
+            })
         }
     }
     
-    func generateAnimatedViews() {
+    func generateAnimatedViews(_ completion:(_ imageView: UIImageView) -> Void) {
         
         let images = [#imageLiteral(resourceName: "star")]
         let index = Int(arc4random_uniform(UInt32(images.count)))
@@ -69,6 +73,31 @@ class MainVC: UIViewController {
         animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
         imageView.layer.add(animation , forKey: nil)
         view.addSubview(imageView)
+        completion(imageView)
+    }
+    
+    func generate(function: (_ bool: Bool) -> Void) {
+        let images = [#imageLiteral(resourceName: "star")]
+        let index = Int(arc4random_uniform(UInt32(images.count)))
+        print(index)
+        let image = images[index]
+        let imageView = UIImageView(image: image)
+        let dimension = 20 + drand48() * 10
+        imageView.frame = CGRect(x: 0, y: 0, width: dimension, height: dimension)
+        
+        let animation = CAKeyframeAnimation(keyPath: "position")
+        animation.path = customPathFromButton().cgPath
+        animation.duration = drand48() + 0.7
+        animation.fillMode = kCAFillModeForwards
+        animation.isRemovedOnCompletion = false
+        animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+        imageView.layer.add(animation , forKey: nil)
+        view.addSubview(imageView)
+        
+        UIView.animate(withDuration: animation.duration) {
+            imageView.alpha = 0
+        }
+        
     }
     
     func customPath() -> UIBezierPath {
@@ -76,7 +105,7 @@ class MainVC: UIViewController {
         
         let randomX: CGFloat = CGFloat(drand48()) * self.view.frame.width
         path.move(to: CGPoint(x: randomX, y: self.view.frame.maxY))
-        let endPoint = CGPoint(x: randomX, y: self.view.frame.minY - 50)
+        let endPoint = CGPoint(x: randomX, y: self.view.frame.minY)
     
         let cp1RandomX: CGFloat = CGFloat(drand48()) * self.view.frame.width
         let cpiRandomY: CGFloat = CGFloat(drand48()) * self.view.frame.height
@@ -98,7 +127,7 @@ class MainVC: UIViewController {
         path.move(to: CGPoint(x: buttonOriginX + randomButtonX , y: self.buyButton.frame.origin.y))
         
         let randomEndPointX:  CGFloat = CGFloat(drand48()) * self.view.frame.size.width
-        let endPoint = CGPoint(x: randomEndPointX, y: self.view.frame.minY - 50)
+        let endPoint = CGPoint(x: randomEndPointX, y: self.view.frame.minY)
         
         let cp1RandomX: CGFloat = CGFloat(drand48()) * self.view.frame.width
         let cpiRandomY: CGFloat = CGFloat(drand48()) * self.buyButton.frame.origin.y
@@ -112,6 +141,8 @@ class MainVC: UIViewController {
         
         return path
     }
+    
+
 }
 
 
